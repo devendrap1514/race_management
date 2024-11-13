@@ -29,3 +29,8 @@
 
 en:
   hello: "Hello world"
+  students:
+    create:
+      success: "Student created successfully."
+      failure:
+        name: "Name can't be blank"
