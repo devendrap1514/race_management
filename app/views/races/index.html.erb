@@ -1,8 +1,5 @@
 <div class="mt-4 d-flex justify-content-end">
   <div class="me-2">
-    <%= button_to "Reset Races", reset_races_path, method: :post, class: "btn btn-danger" %>
-  </div>
-  <div class="me-2">
     <%= button_to "Create a Race", new_race_path, method: :get, class: "btn btn-primary" %>
   </div>
   <div>
@@ -22,49 +19,53 @@
   </div>
 <% else %>
   <h3 class="h5 mb-4 text-secondary">Race List</h3>
-  
-  <div class="table-responsive">
-    <table class="table table-bordered table-hover">
-      <thead class="table-success">
-        <tr>
-          <th scope="col">Race ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Participants</th>
-          <th scope="col" class="text-end">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @races.each do |race| %>
-          <tr>
-            <td><strong><%= race.id %></strong></td>
-            <td><strong><%= race.name %></strong></td>
-            <td>
-              <ul class="list-group mb-0">
-                <% race.student_races.each do |student_race| %>
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div><%= student_race.student.name %></div>
-                    <div>
-                      <span class="badge bg-secondary">Lane <%= student_race.lane %></span>
-                      <span>
-                        <%= student_race.position.present? ? "Position #{student_race.position}" : "Position not set" %>
-                      </span>
-                    </div>
-                  </li>
-                <% end %>
-              </ul>
-            </td>
-            <td class="text-end">
-              <div class="d-flex justify-content-end">
-                <%= link_to "Edit", edit_race_path(race), class: "btn btn-warning btn-sm me-2" %>
-                <%= button_to "Delete", race_path(race),
-                  method: :delete,
-                  data: { confirm: "Are you sure you want to delete this race?" },
-                  class: "btn btn-danger btn-sm" %>
-              </div>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+
+  <div class="list-group">
+    <% @races.each do |race| %>
+      <div class="list-group-item mb-2">
+        <div class="d-flex align-items-center toggle-row" style="cursor: pointer;" data-race-id="<%= race.id %>">
+          <button class="btn p-0 me-2" aria-expanded="false">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+          <h5 class="mb-0 flex-grow-1"><%= race.name %></h5>
+
+          <div class="d-flex align-items-center me-3">
+            <%= link_to edit_race_path(race), class: "btn btn-warning btn-sm me-2" do %>
+              <i class="bi bi-pencil-square"></i>
+            <% end %>
+
+            <%= button_to race_path(race),
+              method: :delete,
+              data: { confirm: "Are you sure you want to delete this race?" },
+              class: "btn btn-danger btn-sm" do %>
+              <i class="bi bi-trash3"></i>
+            <% end %>
+          </div>
+        </div>
+
+        <div id="student-list-<%= race.id %>" class="student-list mt-3" style="display: none;">
+          <table class="table table-striped table-bordered mt-3">
+            <thead class="table-primary">
+              <tr>
+                <th>Student Name</th>
+                <th>Lane</th>
+                <th>Position</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% race.student_races.each do |student_race| %>
+                <tr>
+                  <td><%= student_race.student.name %></td>
+                  <td><%= student_race.lane %></td>
+                  <td><%= student_race.position.present? ? student_race.position : "Position not set" %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
   </div>
 <% end %>
+
+<%= javascript_include_tag 'collapse_button' %>
