@@ -1,0 +1,51 @@
+<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+  <div class="bg-white p-5 rounded shadow-lg w-100" style="max-width: 500px;">
+    <% if flash[:alert] %>
+      <div class="alert alert-danger" role="alert">
+        <%= flash[:alert] %>
+      </div>
+    <% end %>
+
+    <h2 class="h4 font-weight-bold mb-4 text-center text-dark">Create a Race</h2>
+
+    <%= form_with model: @race, local: true, id: "race-form", class: "needs-validation" do |form| %>
+      <div class="form-group mt-3">
+        <%= form.label :name, "Race Name", class: "form-label" %>
+        <%= form.text_field :name, placeholder: 'Race name', class: "form-control form-control-lg", required: true, aria: { describedby: 'name-help' } %>
+      </div>
+
+      <div class="form-group mt-3">
+        <%= form.label :student_ids, "Select Students", class: "form-label text-muted" %>
+        <%= form.collection_select :student_ids, @students, :id, :name, { include_hidden: false }, { multiple: true, class: "form-control form-select", required: true, aria: { describedby: 'student-help' } } %>
+        <small id="student-help" class="form-text text-muted">Hold Ctrl (or Cmd on Mac) to select multiple students.</small>
+      </div>
+
+      <div id="lane-fields"></div>
+
+      <div class="form-group mt-4">
+        <%= form.submit "Create Race", class: "btn btn-primary w-100 py-2", id: "open-lane-modal" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="modal fade" id="laneModal" tabindex="-1" aria-labelledby="laneModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="laneModalLabel">Assign Lanes to Students</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="student-lane-form"></div>
+        <div id="lane-error" class="text-danger mt-2" style="display: none;">Duplicate lanes are not allowed. Please assign a unique lane for each student.</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="confirm-lanes">Confirm Lanes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= javascript_include_tag 'race_form' %>
+

@@ -28,9 +28,12 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
   students:
     create:
       success: "Student created successfully."
       failure:
         name: "Name can't be blank"
+  race:
+    created: "Race was successfully created."
+    deleted: "Race was successfully deleted."
+    not_found: "The race you are looking for could not be found."

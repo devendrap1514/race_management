@@ -6,7 +6,7 @@ class StudentsController < ApplicationController
   def create
     @student = Student.new(student_params)
     if @student.save
-      redirect_to new_student_path, notice: I18n.t('students.create.success')
+      redirect_to races_path, notice: I18n.t('students.create.success')
     else
       redirect_to new_student_path, alert: @student.errors[:name].first
     end
