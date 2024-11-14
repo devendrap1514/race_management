@@ -11,25 +11,22 @@ class CheckPositionService
     student_positions = @student_ids.zip(@positions).map { |id, pos| { student_id: id, position: pos } }
     sorted_students = student_positions.sort_by { |student| student[:position] }
 
-    return invalid_position_error if sorted_students.first[:position] != 1
-
-    expected_position = 1
-
-    sorted_students.each do |student|
-      if student[:position] != expected_position
-        @error = "Invalid positions: Tied athletes must be followed by the correct next position, e.g., 1, 1, 3"
+    last_position = 1
+    sorted_students.each_with_index do |student, index|
+      if index == 0 && student[:position] != 1
+        @error = I18n.t('check_position_service.errors.start_position')
         return false
+      else
+        if student[:position] == last_position
+          next
+        elsif student[:position] == index + 1
+          last_position = student[:position]
+        else
+          @error = I18n.t('check_position_service.errors.invalid_positions')
+          return false
+        end
       end
-      expected_position += 1 unless student_positions.count { |s| s[:position] == expected_position } > 1
     end
-
     true
-  end
-
-  private
-
-  def invalid_position_error
-    @error = 'Position should start with 1'
-    false
   end
 end

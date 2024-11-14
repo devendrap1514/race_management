@@ -28,12 +28,12 @@ class RacesController < ApplicationController
     positions = params[:positions]
 
     if student_ids.size != positions.size
-      return render edit_race_path(@race.id), alert: I18n.t('race.position_required')
+      return redirect_to edit_race_path(@race), alert: I18n.t('race.position_required')
     end
 
     check_position = CheckPositionService.new(student_ids, positions)
     unless check_position.validate
-      return redirect_to edit_race_path(@race.id), alert: check_position.error
+      return redirect_to edit_race_path(@race), alert: check_position.error
     end
 
     if update_positions(student_ids, positions)

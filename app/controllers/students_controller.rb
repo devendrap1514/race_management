@@ -8,7 +8,7 @@ class StudentsController < ApplicationController
     if @student.save
       redirect_to races_path, notice: I18n.t('students.create.success')
     else
-      redirect_to new_student_path, alert: @student.errors[:name].first
+      render :new, status: :unprocessable_entity
     end
   end
 

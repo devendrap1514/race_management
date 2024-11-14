@@ -32,7 +32,7 @@ en:
     create:
       success: "Student created successfully."
       failure:
-        name: "Name can't be blank"
+        name: "can't be blank"
   race:
     created: "Race was successfully created."
     updated: "Race updated successfully!"
@@ -40,3 +40,7 @@ en:
     not_found: "Race not found."
     position_required: "Positions are required for all students."
     invalid_student_data: "Invalid student data. Please try again."
+  check_position_service:
+    errors:
+      start_position: "Position should start with 1"
+      invalid_positions: "Invalid positions: Tied athletes must be followed by the correct next position, e.g., 1, 1, 3"
