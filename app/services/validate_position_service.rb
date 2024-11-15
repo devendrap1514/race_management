@@ -1,4 +1,4 @@
-class CheckPositionService
+class ValidatePositionService
   attr_accessor :error
 
   def initialize(student_ids, positions)
@@ -7,7 +7,7 @@ class CheckPositionService
     @error = ''
   end
 
-  def validate
+  def is_valid_position?
     student_positions = @student_ids.zip(@positions).map { |id, pos| { student_id: id, position: pos } }
     sorted_students = student_positions.sort_by { |student| student[:position] }
 

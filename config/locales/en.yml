@@ -44,3 +44,13 @@ en:
     errors:
       start_position: "Position should start with 1"
       invalid_positions: "Invalid positions: Tied athletes must be followed by the correct next position, e.g., 1, 1, 3"
+  race_form:
+    create_button: "Create a Race"
+    create_student_button: "Create a Student"
+    no_races: "No Races Available"
+    set_positions: "Set Positions"
+    confirm_delete_race: "Are you sure you want to delete this race?"
+    position_not_set: "Position not set"
+    title: "Create a Race"
+    select_students_help: "Hold Ctrl (or Cmd on Mac) to select multiple students."
+    duplicate_lanes_error: "Duplicate lanes are not allowed. Please assign a unique lane for each student."

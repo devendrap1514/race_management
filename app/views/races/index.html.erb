@@ -1,51 +1,54 @@
 <div class="mt-4 d-flex justify-content-end">
   <div class="me-2">
-    <%= button_to "Create a Race", new_race_path, method: :get, class: "btn btn-primary" %>
+    <%= button_to t('race_form.create_button'), new_race_path, method: :get, class: "btn", style: "background-color: #43a047; color: white; font-weight: bold; border: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" %>
   </div>
   <div>
-    <%= button_to "Create a Student", new_student_path, method: :get, class: "btn btn-primary" %>
+    <%= button_to t('race_form.create_student_button'), new_student_path, method: :get, class: "btn", style: "background-color: #43a047; color: white; font-weight: bold; border: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" %>
   </div>
 </div>
 
 <% if flash[:notice] %>
-  <div class="alert alert-primary mt-3" role="alert">
+  <div class="alert alert-success mt-3" role="alert" style="background-color: #dcedc8; color: #33691e; border: none;">
     <%= flash[:notice] %>
   </div>
 <% end %>
 
 <% if @races.empty? %>
-  <div class="alert alert-info text-center mt-4">
-    <h5 class="alert-heading">No Races Available</h5>
+  <div class="alert alert-info text-center mt-4" style="background-color: #e1f5fe; color: #01579b; border: none;">
+    <h5 class="alert-heading"><%= t('race_form.no_races') %></h5>
   </div>
 <% else %>
-  <h3 class="h5 mb-4 text-secondary">Race List</h3>
+  <div class="d-flex justify-content-center mt-5 mb-4">
+    <h3 class="h4 font-weight-bold text-center" style="position: relative; font-size: 1.75rem; color: #2e7d32; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);">
+      Race List
+    </h3>
+  </div>
 
   <div class="list-group">
     <% @races.each do |race| %>
-      <div class="list-group-item mb-2">
-        <div class="d-flex align-items-center toggle-row" style="cursor: pointer;" data-race-id="<%= race.id %>">
-          <button class="btn p-0 me-2" aria-expanded="false">
+      <div class="list-group-item mb-2 border-0 shadow-sm" style="border-radius: 5px; background-color: #f1f8e9;">
+        <div class="d-flex align-items-center toggle-row" style="cursor: pointer; color: #000;" data-race-id="<%= race.id %>">
+          <button class="btn p-0 me-2" aria-expanded="false" style="color: #2e7d32;">
             <i class="bi bi-chevron-right"></i>
           </button>
-          <h5 class="mb-0 flex-grow-1"><%= race.name %></h5>
+          <h5 class="mb-0 flex-grow-1" style="color: #000;"><%= race.name %></h5>
 
           <div class="d-flex align-items-center me-3">
-            <%= link_to edit_race_path(race), class: "btn btn-warning btn-sm me-2" do %>
-              <i class="bi bi-pencil-square"></i>
-            <% end %>
+            <%= link_to "set positions", edit_race_path(race), id: "set-position#{race.id}", class: "btn btn-sm me-2", style: "background-color: #81c784; color: white; border: none; display: none;" %>
 
             <%= button_to race_path(race),
               method: :delete,
-              data: { confirm: "Are you sure you want to delete this race?" },
-              class: "btn btn-danger btn-sm" do %>
+              data: { confirm: t('race_form.confirm_delete_race') },
+              class: "btn btn-sm",
+              style: "background-color: #e57373; color: white; border: none;" do %>
               <i class="bi bi-trash3"></i>
             <% end %>
           </div>
         </div>
 
         <div id="student-list-<%= race.id %>" class="student-list mt-3" style="display: none;">
-          <table class="table table-striped table-bordered mt-3">
-            <thead class="table-primary">
+          <table class="table table-bordered mt-3">
+            <thead class="table-light" style="background-color: #c8e6c9;">
               <tr>
                 <th>Student Name</th>
                 <th>Lane</th>
@@ -55,9 +58,9 @@
             <tbody>
               <% race.student_races.each do |student_race| %>
                 <tr>
-                  <td><%= student_race.student.name %></td>
-                  <td><%= student_race.lane %></td>
-                  <td><%= student_race.position.present? ? student_race.position : "Position not set" %></td>
+                  <td style="color: #000;"><%= student_race.student.name %></td>
+                  <td style="color: #000;"><%= student_race.lane %></td>
+                  <td style="color: #757575;"><%= student_race.position.present? ? student_race.position : t('race_form.position_not_set') %></td>
                 </tr>
               <% end %>
             </tbody>

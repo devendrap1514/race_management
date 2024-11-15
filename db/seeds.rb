@@ -1,3 +1,3 @@
 5.times {
-  Student.create(name: Faker::Name.name)
+  Student.find_or_create_by(name: Faker::Name.name)
 }

@@ -1,7 +1,7 @@
 # spec/services/check_position_service_spec.rb
 require 'rails_helper'
 
-RSpec.describe CheckPositionService do
+RSpec.describe ValidatePositionService do
   describe '#validate' do
     subject { described_class.new(student_ids, positions) }
 
@@ -10,11 +10,11 @@ RSpec.describe CheckPositionService do
       let(:positions) { [1, 2, 3] }
 
       it 'returns true' do
-        expect(subject.validate).to be true
+        expect(subject.is_valid_position?).to be true
       end
 
       it 'does not set an error message' do
-        subject.validate
+        subject.is_valid_position?
         expect(subject.error).to eq('')
       end
     end
@@ -24,11 +24,11 @@ RSpec.describe CheckPositionService do
       let(:positions) { [1, 1, 3] }
 
       it 'returns true' do
-        expect(subject.validate).to be true
+        expect(subject.is_valid_position?).to be true
       end
 
       it 'does not set an error message' do
-        subject.validate
+        subject.is_valid_position?
         expect(subject.error).to eq('')
       end
     end
@@ -38,11 +38,11 @@ RSpec.describe CheckPositionService do
       let(:positions) { [2, 3, 4] }
 
       it 'returns false' do
-        expect(subject.validate).to be false
+        expect(subject.is_valid_position?).to be false
       end
 
       it 'sets an error message indicating positions should start with 1' do
-        subject.validate
+        subject.is_valid_position?
         expect(subject.error).to eq('Position should start with 1')
       end
     end
@@ -52,11 +52,11 @@ RSpec.describe CheckPositionService do
       let(:positions) { [1, 1, 2] }
 
       it 'returns false' do
-        expect(subject.validate).to be false
+        expect(subject.is_valid_position?).to be false
       end
 
       it 'sets an error message about the correct next position for ties' do
-        subject.validate
+        subject.is_valid_position?
         expect(subject.error).to eq('Invalid positions: Tied athletes must be followed by the correct next position, e.g., 1, 1, 3')
       end
     end
@@ -66,11 +66,11 @@ RSpec.describe CheckPositionService do
       let(:positions) { [1, 1, 3, 3, 5] }
 
       it 'returns true' do
-        expect(subject.validate).to be true
+        expect(subject.is_valid_position?).to be true
       end
 
       it 'does not set an error message' do
-        subject.validate
+        subject.is_valid_position?
         expect(subject.error).to eq('')
       end
     end
@@ -80,7 +80,7 @@ RSpec.describe CheckPositionService do
       let(:positions) { [] }
 
       it 'returns false' do
-        expect(subject.validate).to be true
+        expect(subject.is_valid_position?).to be true
       end
     end
   end

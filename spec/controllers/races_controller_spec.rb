@@ -89,12 +89,10 @@ RSpec.describe RacesController, type: :controller do
     context 'with valid positions and valid student but not able to update' do
       let(:valid_positions) { [1, 2] }
 
-
-
-      it 'not updates the race and redirects to races edit path' do
-        allow_any_instance_of(RacesController).to receive(:update_positions).and_return(false)
+      it 'not updates the race and redirect_to to races edit path' do
+        allow_any_instance_of(RacesController).to receive(:positions_updated?).and_return(false)
         patch :update, params: { id: race.id, student_ids: [student1.id, student2.id], positions: valid_positions }
-        expect(response).to redirect_to(edit_race_path(race.id))
+        expect(response).to render_template(:edit)
         expect(flash[:alert]).to eq(I18n.t('race.invalid_student_data'))
       end
     end
@@ -102,7 +100,7 @@ RSpec.describe RacesController, type: :controller do
     context 'when student_ids and positions do not match' do
       it 'returns an alert message and re-renders edit page' do
         patch :update, params: { id: race.id, student_ids: [student1.id], positions: [1, 2] }
-        expect(response).to redirect_to(edit_race_path(race.id))
+        expect(response).to render_template(:edit)
         expect(flash[:alert]).to eq(I18n.t('race.position_required'))
       end
     end
@@ -111,7 +109,7 @@ RSpec.describe RacesController, type: :controller do
       it 'returns an alert message and redirects to edit page' do
         patch :update, params: { id: race.id, student_ids: [student1.id, student2.id], positions: [1, 3] }
 
-        expect(response).to redirect_to(edit_race_path(race.id))
+        expect(response).to render_template(:edit)
         expect(flash[:alert]).to eq(I18n.t('check_position_service.errors.invalid_positions'))
       end
     end

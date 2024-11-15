@@ -25,21 +25,24 @@ class RacesController < ApplicationController
 
   def update
     student_ids = params[:student_ids]
-    positions = params[:positions]
+    positions = params[:positions].reject(&:blank?)
 
-    if student_ids.size != positions.size
-      return redirect_to edit_race_path(@race), alert: I18n.t('race.position_required')
+    unless student_ids.size == positions.size
+      set_flash_message(:alert, I18n.t('race.position_required'))
+      return render :edit
     end
 
-    check_position = CheckPositionService.new(student_ids, positions)
-    unless check_position.validate
-      return redirect_to edit_race_path(@race), alert: check_position.error
+    position = ValidatePositionService.new(student_ids, positions)
+    unless position.is_valid_position?
+      set_flash_message(:alert, position.error)
+      return render :edit
     end
 
-    if update_positions(student_ids, positions)
+    if positions_updated?(student_ids, positions)
       redirect_to races_path, notice: t('race.updated')
     else
-      redirect_to edit_race_path(@race), alert: I18n.t('race.invalid_student_data')
+      set_flash_message(:alert, I18n.t('race.invalid_student_data'))
+      render :edit
     end
   end
 
@@ -64,11 +67,15 @@ class RacesController < ApplicationController
     @students = Student.all
   end
 
-  def update_positions(student_ids, positions)
+  def positions_updated?(student_ids, positions)
     positions.each_with_index do |position, index|
       student_race = @race.student_races.find_by(student_id: student_ids[index])
       return false unless student_race&.update(position: position)
     end
     true
+  end
+
+  def set_flash_message(type, message)
+    flash.now[type] = message
   end
 end

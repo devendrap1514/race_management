@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const laneFieldsContainer = document.getElementById('lane-fields');
   const laneError = document.getElementById('lane-error');
 
-  // Create a lane select element for a given student
   function createLaneSelectHTML(studentId, studentName, laneNumbers) {
     const select = document.createElement('select');
     select.classList.add('form-control', 'lane-select');
@@ -32,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
     return select;
   }
 
-  // Populate the student lane form with lane selection for each student
   function populateStudentLaneForm() {
     studentLaneForm.innerHTML = '';
     const selectedOptions = Array.from(studentSelect.selectedOptions);
@@ -65,13 +63,11 @@ document.addEventListener('DOMContentLoaded', function() {
     return true;
   }
 
-  // Handle form submission and show the lane selection modal
   form.addEventListener('submit', function(event) {
     event.preventDefault();
     if (populateStudentLaneForm()) laneModal.show();
   });
 
-  // Validate lanes and append them as hidden fields
   function confirmLanes() {
     laneFieldsContainer.innerHTML = '';
     const lanes = new Set();
@@ -113,6 +109,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Confirm lanes on button click
   confirmLanesButton.addEventListener('click', confirmLanes);
 });
