@@ -17,32 +17,17 @@ class RacesController < ApplicationController
       redirect_to races_path, notice: I18n.t('race.created')
     else
       flash.now[:alert] = @race.errors.full_messages.to_sentence
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
   def edit; end
 
   def update
-    student_ids = params[:student_ids]
-    positions = params[:positions].reject(&:blank?)
-
-    unless student_ids.size == positions.size
-      set_flash_message(:alert, I18n.t('race.position_required'))
-      return render :edit
-    end
-
-    position = ValidatePositionService.new(student_ids, positions)
-    unless position.is_valid_position?
-      set_flash_message(:alert, position.error)
-      return render :edit
-    end
-
-    if positions_updated?(student_ids, positions)
+    if @race.update(update_race_params)
       redirect_to races_path, notice: t('race.updated')
     else
-      set_flash_message(:alert, I18n.t('race.invalid_student_data'))
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -57,6 +42,10 @@ class RacesController < ApplicationController
     params.require(:race).permit(:name, student_races_attributes: %i[student_id lane])
   end
 
+  def update_race_params
+    params.require(:race).permit(student_races_attributes: %i[id position])
+  end
+
   def set_race
     @race = Race.find(params[:id])
   rescue ActiveRecord::RecordNotFound
@@ -65,17 +54,5 @@ class RacesController < ApplicationController
 
   def load_students
     @students = Student.all
-  end
-
-  def positions_updated?(student_ids, positions)
-    positions.each_with_index do |position, index|
-      student_race = @race.student_races.find_by(student_id: student_ids[index])
-      return false unless student_race&.update(position: position)
-    end
-    true
-  end
-
-  def set_flash_message(type, message)
-    flash.now[type] = message
   end
 end

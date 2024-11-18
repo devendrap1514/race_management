@@ -7,31 +7,49 @@ class Race < ApplicationRecord
   accepts_nested_attributes_for :student_races
 
   validate :duplicate_students, :duplicate_lanes, :minimum_participants, :lane_number, on: :create
+  validate :check_positions, on: :update, unless: -> { student_races.map(&:position).compact.empty? }
 
   private
 
   def minimum_participants
-    errors.add(:race, "must have at least two students") if student_races.size < 2
+    errors.add(:race, I18n.t('race.minimum_participants')) if student_races.size < 2
   end
 
   def duplicate_students
     has_duplicate_students = student_races.map(&:student_id).tally.any? { |_student_id, count| count > 1 }
     if has_duplicate_students
-      errors.add(:student, "can't be assigned to multiple lanes in the same race")
+      errors.add(:student, I18n.t('race.duplicate_students'))
     end
   end
 
   def duplicate_lanes
     has_duplicate_lanes = student_races.map(&:lane).tally.any? { |_lane, count| count > 1 }
     if has_duplicate_lanes
-      errors.add(:base, "Can't assign the same lane to multiple students")
+      errors.add(:base, I18n.t('race.duplicate_lanes'))
     end
   end
 
   def lane_number
     highest_lane = student_races.map(&:lane).compact.max
     if highest_lane && highest_lane > student_races.size
-      errors.add(:base, "Lane numbers cannot exceed the number of selected students")
+      errors.add(:base, I18n.t('race.lane_number'))
+    end
+  end
+
+  def check_positions
+    student_races.each do |student_race|
+      if student_race.position.nil?
+        errors.add(:base, I18n.t('race.position_required'))
+        return
+      end
+    end
+    student_ids = student_races.map(&:student_id)
+    positions = student_races.map(&:position)
+
+    service = ValidatePositionService.new(student_ids, positions)
+
+    unless service.is_valid_position?
+      errors.add(:base, service.error)
     end
   end
 end

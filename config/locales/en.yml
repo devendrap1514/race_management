@@ -40,6 +40,10 @@ en:
     not_found: "Race not found."
     position_required: "Positions are required for all students."
     invalid_student_data: "Invalid student data. Please try again."
+    minimum_participants: "must have at least two students"
+    duplicate_students: "can't be assigned to multiple lanes in the same race"
+    duplicate_lanes: "Can't assign the same lane to multiple students"
+    lane_number: "Lane numbers cannot exceed the number of selected students"
   check_position_service:
     errors:
       start_position: "Position should start with 1"

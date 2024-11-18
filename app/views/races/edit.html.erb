@@ -1,35 +1,36 @@
 <div class="d-flex justify-content-center align-items-center vh-100" style="background-color: #e8f5e9;">
   <div class="bg-white p-5 rounded shadow w-100" style="max-width: 550px; border: 1px solid #c8e6c9;">
-
-    <% if flash[:alert] %>
+    <% if @race.errors.full_messages.present? %>
       <div class="alert alert-danger" role="alert" style="background-color: #f8d7da; color: #721c24; border: none;">
-        <%= flash[:alert] %>
+        <% @race.errors.full_messages.each do |msg| %>
+          <%= msg %>
+        <% end %>
       </div>
     <% end %>
-
     <h2 class="h4 mb-4 text-center" style="color: #388e3c; font-weight: bold; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);">Edit Race</h2>
 
-    <%= form_with url: race_path(@race.id), method: :patch do |form| %>
+    <%= form_with model: @race, method: :patch do |form| %>
       <div class="mt-3">
         <h5 class="mb-3" style="color: #388e3c; font-size: 1.2rem;">Participants</h5>
-
         <div style="max-height: 300px; overflow-y: auto;">
-          <% @race.student_races.each do |student_race| %>
+          <%= form.fields_for :student_races do |student_race_form| %>
             <div class="mb-4 border p-3 rounded bg-white shadow-sm" style="background-color: #e8f5e9;">
-              <%= form.label "user_keys_#{student_race.student_id}", student_race.student.name, class: "form-label" %>
-              <%= form.hidden_field "student_ids[]", value: student_race.student_id %>
+              <%= student_race_form.label :student_id, student_race_form.object.student.name, class: "form-label" %>
+
+              <%= student_race_form.hidden_field :id %>
 
               <div class="mb-3">
                 <p class="mb-2" style="color: #388e3c; font-weight: bold; display: inline-block;">Lane Number:</p>
                 <p class="mb-3" style="color: #000000; font-weight: 600; display: inline-block; margin-left: 5px;">
-                  <%= student_race.lane %>
+                  <%= student_race_form.object.lane %> <!-- Lane number from the model -->
                 </p>
               </div>
 
               <div class="mb-3">
-                <%= form.select "positions[]", (1..@race.student_races.size).to_a, 
-                                { selected: student_race.position, include_blank: 'Select Position' },
-                                { class: "form-select", style: "border: 2px solid #81c784;", aria: { label: "Position for #{student_race.student.name}" } } %>
+                <%= student_race_form.select :position,
+                      (1..@race.student_races.size).to_a,
+                      { selected: student_race_form.object.position, include_blank: 'Select Position' },
+                      { class: "form-select", style: "border: 2px solid #81c784;", aria: { label: "Position for #{student_race_form.object.student.name}" } } %>
               </div>
             </div>
           <% end %>
@@ -37,8 +38,8 @@
       </div>
 
       <div class="mt-4 d-flex justify-content-between">
-        <%= link_to "Back", races_path, class: "btn btn-success btn-lg", style: "font-weight: bold; background-color: #388e3c; border: none;" %>
-        <%= form.submit "Update Race", class: "btn btn-success btn-lg", style: "font-weight: bold; background-color: #388e3c; border: none;" %>
+        <%= link_to "Back", races_path, class: "btn py-2 px-4 rounded-3 shadow-sm", style: "background-color: #43a047; color: white; font-weight: bold; border: none;" %>
+        <%= form.submit "Update Race", class: "btn py-2 px-4 rounded-3 shadow-sm", style: "background-color: #43a047; color: white; font-weight: bold; border: none;" %>
       </div>
     <% end %>
   </div>

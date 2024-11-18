@@ -19,7 +19,7 @@ RSpec.describe Race, type: :model do
       race.student_races = []
       race.student_races.build(student: create(:student))
       expect(race).to_not be_valid
-      expect(race.errors[:race]).to include('must have at least two students')
+      expect(race.errors[:race]).to include(I18n.t('race.minimum_participants'))
     end
 
     it 'is not valid if a student is assigned to multiple lanes' do
@@ -28,7 +28,7 @@ RSpec.describe Race, type: :model do
       race.student_races.build(student: student1, lane: 1)
       race.student_races.build(student: student1, lane: 2)
       expect(race).to_not be_valid
-      expect(race.errors[:student]).to include("can't be assigned to multiple lanes in the same race")
+      expect(race.errors[:student]).to include(I18n.t('race.duplicate_students'))
     end
 
     it 'is not valid if a lane is assigned to multiple students' do
@@ -38,7 +38,7 @@ RSpec.describe Race, type: :model do
       race.student_races.build(student: student1, lane: 1)
       race.student_races.build(student: student2, lane: 1)
       expect(race).to_not be_valid
-      expect(race.errors[:base]).to include("Can't assign the same lane to multiple students")
+      expect(race.errors[:base]).to include(I18n.t('race.duplicate_lanes'))
     end
     it 'is not valid if a lane exceed the number of selected ' do
       student1 = create(:student)
@@ -47,7 +47,19 @@ RSpec.describe Race, type: :model do
       race.student_races.build(student: student1, lane: 1)
       race.student_races.build(student: student2, lane: 4)
       expect(race).to_not be_valid
-      expect(race.errors[:base]).to include("Lane numbers cannot exceed the number of selected students")
+      expect(race.errors[:base]).to include(I18n.t('race.lane_number'))
+    end
+    it 'is not valid if positions is empty for some students' do
+      race.save
+      race.update(student_races_attributes: race.student_races.map.with_index { |student_race, index|
+          {
+            id: student_race.id,
+            position: index % 2 == 1 ? nil : index+1
+          }
+        }
+      )
+      expect(race).to_not be_valid
+      expect(race.errors[:base]).to include(I18n.t('race.position_required'))
     end
   end
 

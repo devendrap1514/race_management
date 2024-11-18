@@ -16,11 +16,6 @@ RSpec.describe RacesController, type: :controller do
 
   let(:invalid_attributes) { { name: '', student_races_attributes: [] } }
 
-  before do
-    create(:student_race, race: race, student: student1, lane: 1)
-    create(:student_race, race: race, student: student2, lane: 2)
-  end
-
   describe 'GET #index' do
     it 'assigns all races to @races' do
       get :index
@@ -49,12 +44,13 @@ RSpec.describe RacesController, type: :controller do
     end
 
     context 'with invalid parameters' do
-      it 'does not create a new race and re-renders the new template' do
+      it 'does not create a new race and re-renders the new template with unprocessable_entity status' do
         expect do
           post :create, params: { race: invalid_attributes }
         end.to_not change(Race, :count)
 
         expect(response).to render_template(:new)
+        expect(response.status).to eq(422)
         expect(flash.now[:alert]).to include("Name can't be blank")
       end
     end
@@ -66,57 +62,50 @@ RSpec.describe RacesController, type: :controller do
       expect(assigns(:race)).to eq(race)
     end
 
-    it 'redirect to index page if race not found' do
+    it 'redirects to races path if race not found' do
       get :edit, params: { id: '0' }
       expect(response).to redirect_to(races_path)
+      expect(flash[:alert]).to eq(I18n.t('race.not_found'))
     end
   end
 
   describe 'PATCH #update' do
-    context 'with valid positions and valid student data' do
-      let(:valid_positions) { [1, 2] }
-
-      before do
-        patch :update, params: { id: race.id, student_ids: [student1.id, student2.id], positions: valid_positions }
-      end
-
-      it 'updates the race and redirects to races path' do
+    context 'with valid parameters' do
+      it 'updates the requested race and redirects to races path' do
+        valid_attributes = {
+          student_races_attributes: race.student_races.map.with_index { |student_race, index|
+            {
+              id: student_race.id,
+              position: index+1
+            }
+          }
+        }
+        patch :update, params: { id: race.id, race: valid_attributes }
         expect(response).to redirect_to(races_path)
         expect(flash[:notice]).to eq(I18n.t('race.updated'))
       end
     end
 
-    context 'with valid positions and valid student but not able to update' do
-      let(:valid_positions) { [1, 2] }
-
-      it 'not updates the race and redirect_to to races edit path' do
-        allow_any_instance_of(RacesController).to receive(:positions_updated?).and_return(false)
-        patch :update, params: { id: race.id, student_ids: [student1.id, student2.id], positions: valid_positions }
+    context 'with invalid parameters' do
+      it 'does not update the race and re-renders the edit template with unprocessable_entity status' do
+        invalid_attributes = {
+          student_races_attributes: race.student_races.map.with_index { |student_race, index|
+            {
+              id: student_race.id,
+              position: 2
+            }
+          }
+        }
+        patch :update, params: { id: race.id, race: invalid_attributes }
         expect(response).to render_template(:edit)
-        expect(flash[:alert]).to eq(I18n.t('race.invalid_student_data'))
-      end
-    end
-
-    context 'when student_ids and positions do not match' do
-      it 'returns an alert message and re-renders edit page' do
-        patch :update, params: { id: race.id, student_ids: [student1.id], positions: [1, 2] }
-        expect(response).to render_template(:edit)
-        expect(flash[:alert]).to eq(I18n.t('race.position_required'))
-      end
-    end
-
-    context 'when position validation fails' do
-      it 'returns an alert message and redirects to edit page' do
-        patch :update, params: { id: race.id, student_ids: [student1.id, student2.id], positions: [1, 3] }
-
-        expect(response).to render_template(:edit)
-        expect(flash[:alert]).to eq(I18n.t('check_position_service.errors.invalid_positions'))
+        expect(response.status).to eq(422)
       end
     end
   end
 
   describe 'DELETE #destroy' do
     it 'destroys the requested race and redirects to races path' do
+      race
       expect do
         delete :destroy, params: { id: race.id }
       end.to change(Race, :count).by(-1)
