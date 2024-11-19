@@ -11,7 +11,7 @@ RSpec.describe Student, type: :model do
     it 'is not valid without a name' do
       student.name = nil
       expect(student).to_not be_valid
-      expect(student.errors[:name]).to include(I18n.t('students.create.failure.name'))
+      expect(student.errors[:name]).to include(I18n.t('active_record.errors.models.student.attributes.name.blank'))
     end
   end
 

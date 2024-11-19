@@ -28,33 +28,50 @@
 #       enabled: "ON"
 
 en:
-  students:
-    create:
-      success: "Student created successfully."
-      failure:
-        name: "can't be blank"
-  race:
-    created: "Race was successfully created."
-    updated: "Race updated successfully!"
-    deleted: "Race was successfully deleted."
-    not_found: "Race not found."
-    position_required: "Positions are required for all students."
-    invalid_student_data: "Invalid student data. Please try again."
-    minimum_participants: "must have at least two students"
-    duplicate_students: "can't be assigned to multiple lanes in the same race"
-    duplicate_lanes: "Can't assign the same lane to multiple students"
-    lane_number: "Lane numbers cannot exceed the number of selected students"
-  check_position_service:
+  active_record:
     errors:
-      start_position: "Position should start with 1"
-      invalid_positions: "Invalid positions: Tied athletes must be followed by the correct next position, e.g., 1, 1, 3"
-  race_form:
-    create_button: "Create a Race"
-    create_student_button: "Create a Student"
-    no_races: "No Races Available"
-    set_positions: "Set Positions"
-    confirm_delete_race: "Are you sure you want to delete this race?"
-    position_not_set: "Position not set"
-    title: "Create a Race"
-    select_students_help: "Hold Ctrl (or Cmd on Mac) to select multiple students."
-    duplicate_lanes_error: "Duplicate lanes are not allowed. Please assign a unique lane for each student."
+      models:
+        student_race:
+          attributes:
+            student:
+              blank: "can't be blank for the race"
+              uniqueness: 'is already a participant in this race'
+            race:
+              blank: "can't be blank"
+            lane:
+              blank: "can't be blank"
+              uniqueness: 'is already assigned to the student'
+            position:
+              blank: "can't be blank"
+          lane_number_exceed: "The number of lanes cannot exceed the number of students"
+          minimum_participants: "A race must have at least two participants"
+          duplicate_lanes: "The same lane can't be assigned to multiple students"
+          duplicate_students: "The same student can't be assigned to multiple lanes"
+          start_position: "Positions must start with 1st"
+          invalid_positions: "Invalid positions: Tied athletes must be followed by the correct next position, e.g., 1, 1, 3"
+          position_required: "Positions are required for all students."
+        student:
+          attributes:
+            name:
+              blank: "can't be blank"
+        race:
+          attributes:
+            name:
+              blank: "can't be blank"
+
+  message:
+    select_students_helper_text: "Hold Ctrl (or Cmd on Mac) to select multiple students."
+    create:
+      race: "Race created successfully."
+      student: "Student created successfully."
+      race_helper_text: "Create a race"
+      student_helper_text: "Create a student"
+    update:
+      race: "Race updated successfully."
+    delete:
+      race: "Race deleted successfully."
+      confirm: "Are you sure you want to delete this race?"
+    not_found:
+      race: "Race not found."
+      races: "No races available."
+    position_not_set: "Position not set."

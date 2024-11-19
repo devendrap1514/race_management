@@ -12,14 +12,14 @@ RSpec.describe Race, type: :model do
     it 'is not valid without a name' do
       race.name = nil
       expect(race).to_not be_valid
-      expect(race.errors[:name]).to include("can't be blank")
+      expect(race.errors[:name]).to include(I18n.t('active_record.errors.models.student.attributes.name.blank'))
     end
 
     it 'is not valid if it has fewer than two participants' do
       race.student_races = []
       race.student_races.build(student: create(:student))
       expect(race).to_not be_valid
-      expect(race.errors[:race]).to include(I18n.t('race.minimum_participants'))
+      expect(race.errors[:race]).to include(I18n.t('active_record.errors.models.student_race.minimum_participants'))
     end
 
     it 'is not valid if a student is assigned to multiple lanes' do
@@ -28,7 +28,7 @@ RSpec.describe Race, type: :model do
       race.student_races.build(student: student1, lane: 1)
       race.student_races.build(student: student1, lane: 2)
       expect(race).to_not be_valid
-      expect(race.errors[:student]).to include(I18n.t('race.duplicate_students'))
+      expect(race.errors[:student]).to include(I18n.t('active_record.errors.models.student_race.duplicate_students'))
     end
 
     it 'is not valid if a lane is assigned to multiple students' do
@@ -38,7 +38,7 @@ RSpec.describe Race, type: :model do
       race.student_races.build(student: student1, lane: 1)
       race.student_races.build(student: student2, lane: 1)
       expect(race).to_not be_valid
-      expect(race.errors[:base]).to include(I18n.t('race.duplicate_lanes'))
+      expect(race.errors[:base]).to include(I18n.t('active_record.errors.models.student_race.duplicate_lanes'))
     end
     it 'is not valid if a lane exceed the number of selected ' do
       student1 = create(:student)
@@ -47,7 +47,7 @@ RSpec.describe Race, type: :model do
       race.student_races.build(student: student1, lane: 1)
       race.student_races.build(student: student2, lane: 4)
       expect(race).to_not be_valid
-      expect(race.errors[:base]).to include(I18n.t('race.lane_number'))
+      expect(race.errors[:base]).to include(I18n.t('active_record.errors.models.student_race.lane_number_exceed'))
     end
     it 'is not valid if positions is empty for some students' do
       race.save
@@ -59,7 +59,7 @@ RSpec.describe Race, type: :model do
         }
       )
       expect(race).to_not be_valid
-      expect(race.errors[:base]).to include(I18n.t('race.position_required'))
+      expect(race.errors[:base]).to include(I18n.t('active_record.errors.models.student_race.position_required'))
     end
   end
 

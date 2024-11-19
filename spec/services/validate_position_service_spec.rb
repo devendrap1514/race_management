@@ -43,7 +43,7 @@ RSpec.describe ValidatePositionService do
 
       it 'sets an error message indicating positions should start with 1' do
         subject.is_valid_position?
-        expect(subject.error).to eq('Position should start with 1')
+        expect(subject.error).to eq(I18n.t('active_record.errors.models.student_race.start_position'))
       end
     end
 
@@ -57,7 +57,7 @@ RSpec.describe ValidatePositionService do
 
       it 'sets an error message about the correct next position for ties' do
         subject.is_valid_position?
-        expect(subject.error).to eq('Invalid positions: Tied athletes must be followed by the correct next position, e.g., 1, 1, 3')
+        expect(subject.error).to eq(I18n.t('active_record.errors.models.student_race.invalid_positions'))
       end
     end
 

@@ -14,7 +14,7 @@ class ValidatePositionService
     last_position = 1
     sorted_students.each_with_index do |student, index|
       if index == 0 && student[:position] != 1
-        @error = I18n.t('check_position_service.errors.start_position')
+        @error = I18n.t('active_record.errors.models.student_race.start_position')
         return false
       else
         if student[:position] == last_position
@@ -22,7 +22,7 @@ class ValidatePositionService
         elsif student[:position] == index + 1
           last_position = student[:position]
         else
-          @error = I18n.t('check_position_service.errors.invalid_positions')
+          @error = I18n.t('active_record.errors.models.student_race.invalid_positions')
           return false
         end
       end

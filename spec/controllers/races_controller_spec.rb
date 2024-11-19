@@ -39,7 +39,7 @@ RSpec.describe RacesController, type: :controller do
         end.to change(Race, :count).by(1)
 
         expect(response).to redirect_to(races_path)
-        expect(flash[:notice]).to eq(I18n.t('race.created'))
+        expect(flash[:notice]).to eq(I18n.t('message.create.race'))
       end
     end
 
@@ -51,7 +51,6 @@ RSpec.describe RacesController, type: :controller do
 
         expect(response).to render_template(:new)
         expect(response.status).to eq(422)
-        expect(flash.now[:alert]).to include("Name can't be blank")
       end
     end
   end
@@ -65,7 +64,7 @@ RSpec.describe RacesController, type: :controller do
     it 'redirects to races path if race not found' do
       get :edit, params: { id: '0' }
       expect(response).to redirect_to(races_path)
-      expect(flash[:alert]).to eq(I18n.t('race.not_found'))
+      expect(flash[:alert]).to eq(I18n.t('message.not_found.race'))
     end
   end
 
@@ -82,7 +81,7 @@ RSpec.describe RacesController, type: :controller do
         }
         patch :update, params: { id: race.id, race: valid_attributes }
         expect(response).to redirect_to(races_path)
-        expect(flash[:notice]).to eq(I18n.t('race.updated'))
+        expect(flash[:notice]).to eq(I18n.t('message.update.race'))
       end
     end
 
@@ -111,7 +110,7 @@ RSpec.describe RacesController, type: :controller do
       end.to change(Race, :count).by(-1)
 
       expect(response).to redirect_to(races_path)
-      expect(flash[:notice]).to eq(I18n.t('race.deleted'))
+      expect(flash[:notice]).to eq(I18n.t('message.delete.race'))
     end
   end
 end

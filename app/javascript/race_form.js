@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const studentLaneForm = document.getElementById('student-lane-form');
   const laneFieldsContainer = document.getElementById('lane-fields');
   const laneError = document.getElementById('lane-error');
+  const alertBox = document.getElementById('alert-box')
 
   function createLaneSelectHTML(studentId, studentName, laneNumbers) {
     const select = document.createElement('select');
@@ -32,11 +33,14 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function populateStudentLaneForm() {
+    laneError.style.display = 'none';
+    alertBox.style.display = 'none';
     studentLaneForm.innerHTML = '';
     const selectedOptions = Array.from(studentSelect.selectedOptions);
 
     if (selectedOptions.length < 2) {
-      alert('Please select at least two students.');
+      alertBox.textContent = 'Please select at least two students.';
+      alertBox.style.display = 'block';
       return false;
     }
 

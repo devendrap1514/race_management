@@ -6,7 +6,7 @@ class StudentsController < ApplicationController
   def create
     @student = Student.new(student_params)
     if @student.save
-      redirect_to races_path, notice: I18n.t('students.create.success')
+      redirect_to races_path, notice: I18n.t('message.create.student')
     else
       render :new, status: :unprocessable_entity
     end

@@ -1,9 +1,9 @@
 <div class="mt-4 d-flex justify-content-end">
   <div class="me-2">
-    <%= button_to t('race_form.create_button'), new_race_path, method: :get, class: "btn", style: "background-color: #43a047; color: white; font-weight: bold; border: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" %>
+    <%= button_to t('message.create.race_helper_text'), new_race_path, method: :get, class: "btn", style: "background-color: #43a047; color: white; font-weight: bold; border: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" %>
   </div>
   <div>
-    <%= button_to t('race_form.create_student_button'), new_student_path, method: :get, class: "btn", style: "background-color: #43a047; color: white; font-weight: bold; border: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" %>
+    <%= button_to t('message.create.student_helper_text'), new_student_path, method: :get, class: "btn", style: "background-color: #43a047; color: white; font-weight: bold; border: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" %>
   </div>
 </div>
 
@@ -15,7 +15,7 @@
 
 <% if @races.empty? %>
   <div class="alert alert-info text-center mt-4" style="background-color: #e1f5fe; color: #01579b; border: none;">
-    <h5 class="alert-heading"><%= t('race_form.no_races') %></h5>
+    <h5 class="alert-heading"><%= t('message.not_found.race') %></h5>
   </div>
 <% else %>
   <div class="d-flex justify-content-center mt-5 mb-4">
@@ -38,7 +38,7 @@
 
             <%= button_to race_path(race),
               method: :delete,
-              data: { confirm: t('race_form.confirm_delete_race') },
+              data: { confirm: t('message.delete.confirm') },
               class: "btn btn-sm",
               style: "background-color: #e57373; color: white; border: none;" do %>
               <i class="bi bi-trash3"></i>
@@ -52,7 +52,7 @@
               <tr>
                 <th>Student Name</th>
                 <th>Lane</th>
-                <th>Position</th>
+                <th style="width: 40%;">Position</th>
               </tr>
             </thead>
             <tbody>
@@ -60,7 +60,7 @@
                 <tr>
                   <td style="color: #000;"><%= student_race.student.name %></td>
                   <td style="color: #000;"><%= student_race.lane %></td>
-                  <td style="color: #757575;"><%= student_race.position.present? ? student_race.position : t('race_form.position_not_set') %></td>
+                  <td style="color: #757575;"><%= student_race.position.present? ? student_race.position : t('message.position_not_set') %></td>
                 </tr>
               <% end %>
             </tbody>

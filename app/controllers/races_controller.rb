@@ -14,9 +14,8 @@ class RacesController < ApplicationController
     @race = Race.new(race_params)
 
     if @race.save
-      redirect_to races_path, notice: I18n.t('race.created')
+      redirect_to races_path, notice: I18n.t('message.create.race')
     else
-      flash.now[:alert] = @race.errors.full_messages.to_sentence
       render :new, status: :unprocessable_entity
     end
   end
@@ -25,7 +24,7 @@ class RacesController < ApplicationController
 
   def update
     if @race.update(update_race_params)
-      redirect_to races_path, notice: t('race.updated')
+      redirect_to races_path, notice: t('message.update.race')
     else
       render :edit, status: :unprocessable_entity
     end
@@ -33,7 +32,7 @@ class RacesController < ApplicationController
 
   def destroy
     @race.destroy
-    redirect_to races_path, notice: I18n.t('race.deleted')
+    redirect_to races_path, notice: I18n.t('message.delete.race')
   end
 
   private
@@ -49,7 +48,7 @@ class RacesController < ApplicationController
   def set_race
     @race = Race.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    redirect_to races_path, alert: I18n.t('race.not_found')
+    redirect_to races_path, alert: I18n.t('message.not_found.race')
   end
 
   def load_students

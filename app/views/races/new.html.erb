@@ -1,12 +1,18 @@
 <div class="d-flex justify-content-center align-items-center vh-100" style="background-color: #e8f5e9;">
   <div class="bg-white p-5 rounded shadow w-100" style="max-width: 550px; border: 1px solid #c8e6c9;">
-    <% if flash[:alert] %>
-      <div class="alert alert-danger" role="alert">
-        <%= flash[:alert] %>
+    <% if @race.errors.full_messages.present? %>
+      <div class="alert alert-danger" role="alert" style="background-color: #f8d7da; color: #721c24; border: none;">
+        <% @race.errors.full_messages.each do |msg| %>
+          <%= msg %>
+          <br>
+        <% end %>
       </div>
     <% end %>
 
-    <h2 class="h4 font-weight-bold mb-4 text-center" style="color: #2e7d32;"><%= t("race_form.title")%></h2>
+    <div class="alert alert-danger" style="display: none;" role="alert" id='alert-box'>
+    </div>
+
+    <h2 class="h4 font-weight-bold mb-4 text-center" style="color: #2e7d32;"><%= t("message.create.race_helper_text")%></h2>
 
     <%= form_with model: @race, local: true, id: "race-form", class: "needs-validation" do |form| %>
       <div class="form-group mb-3">
@@ -17,7 +23,7 @@
       <div class="form-group mb-3">
         <%= form.label :student_ids, "Select Students", class: "form-label" %>
         <%= form.collection_select :student_ids, @students, :id, :name, { include_hidden: false }, { multiple: true, class: "form-control form-select border-light shadow-sm", required: true, aria: { describedby: 'student-help' }, style: "background-color: #f1f8e9;" } %>
-        <small id="student-help" class="form-text" style="color: #6d9e6b;"><%= t("race_form.select_students_help") %></small>
+        <small id="student-help" class="form-text" style="color: #6d9e6b;"><%= t("message.select_students_helper_text") %></small>
       </div>
 
       <div id="lane-fields"></div>
@@ -40,7 +46,7 @@
       </div>
       <div class="modal-body" style="background-color: #f1f8e9;">
         <div id="student-lane-form"></div>
-        <div id="lane-error" class="text-danger mt-2" style="display: none;"> <%= t("race_form.duplicate_lanes_error") %></div>
+        <div id="lane-error" class="text-danger mt-2" style="display: none;"> <%= t('active_record.errors.models.student_race.duplicate_lanes') %></div>
       </div>
       <div class="modal-footer" style="background-color: #f1f8e9; border-top: none;">
         <button type="button" class="btn" id="confirm-lanes" style="background-color: #43a047; color: white; font-weight: bold;">Confirm Lanes</button>

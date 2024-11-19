@@ -17,7 +17,7 @@ RSpec.describe StudentsController, type: :controller do
         }.to change(Student, :count).by(1)
 
         expect(response).to redirect_to(races_path)
-        expect(flash[:notice]).to eq(I18n.t('students.create.success'))
+        expect(flash[:notice]).to eq(I18n.t('message.create.student'))
       end
     end
 
@@ -27,7 +27,7 @@ RSpec.describe StudentsController, type: :controller do
           post :create, params: { student: { name: '' } }
         }.not_to change(Student, :count)
 
-        expect(assigns(:student).errors[:name]).to include("can't be blank")
+        expect(assigns(:student).errors[:name]).to include(I18n.t('active_record.errors.models.student.attributes.name.blank'))
         expect(response).to render_template(:new)
         expect(response).to have_http_status(:unprocessable_entity)
       end
